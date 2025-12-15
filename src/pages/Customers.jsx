@@ -8,8 +8,26 @@ import CustomerForm from "@/components/customers/CustomerForm";
 import CustomerList from "@/components/customers/CustomerList";
 import PageHeader from "@/components/common/PageHeader";
 import useFetch from "@/hooks/useFetch";
+// function Customers() {
+//   const [customers, setCustomers] = useState([])
+//   const [loading, setLoading] = useState(true)
+//   const [error, setError] = useState(null)
+
+//   useEffect(() => {
+//     customerService.getAllCustomers()
+//       .then(data => setCustomers(data))
+//       .catch(err => setError(err))
+//       .finally(() => setLoading(false))
+//   }, [])
+
+//   if (loading) return <Spinner />
+//   if (error) return <Error />
+
+//   return <CustomerTable data={customers} />
+// }
 
 export default function Customers() {
+
   const [search, setSearch] = useState("");
   const [openCreate, setOpenCreate] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false); // this is for snackbar
@@ -86,20 +104,16 @@ export default function Customers() {
 
 
       {/* Creation Dialog */}
-      <Dialog open={openCreate} onClose={() => setOpenCreate(false)} fullWidth maxWidth="xs">
-        <DialogTitle>Create Customer</DialogTitle>
-        <DialogContent sx={{ mt: 1 }}>
-          <CustomerForm
-            onSubmit={async (data) => {
+      <CustomerForm
+        open={openCreate}
+        onClose={()=> setOpenCreate(false)}
+        onSubmit={async (data) => {
               await customerService.createCustomer(data);
               setOpenCreate(false);
               setSuccessOpen(true);
               refetch();
             }}
-            onCancel={() => setOpenCreate(false)}
-          ></CustomerForm>
-        </DialogContent>
-      </Dialog>
+      ></CustomerForm>
 
       <Snackbar
         open={successOpen}
