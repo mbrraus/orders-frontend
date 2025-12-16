@@ -1,5 +1,5 @@
 import {
-    Box, Button, Skeleton, Alert
+    Box, Button, Skeleton, Alert, Snackbar
 } from "@mui/material";
 import orderService from "@/services/orderService";
 import useFetch from "@/hooks/useFetch";
@@ -30,6 +30,7 @@ export default function Orders() {
 
     const { data: orders, loading, error, refetch } = useFetch(orderService.getAllOrders);
     const [openCreate, setOpenCreate] = useState(false);
+    const [successOpen, setSuccessOpen] = useState(false);
     const [openItems, setOpenItems] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
 
@@ -137,10 +138,21 @@ export default function Orders() {
                     async(data)=> {
                         await orderService.createOrder(data);
                         setOpenCreate(false);
+                        setSuccessOpen(true);
                         refetch();
                     }
                 }
             />
+            <Snackbar
+                    open={successOpen}
+                    autoHideDuration={3500}
+                    onClose={() => setSuccessOpen(false)}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                  >
+                    <Alert severity="success" variant="filled" sx={{ justifyContent: "center" }}>
+                      Order created successfully.
+                    </Alert>
+                  </Snackbar>
         </Box>
     );
 

@@ -125,7 +125,7 @@ export default function PlaceOrder({ open, onSubmit, onClose }) {
 
                 />
                 <TextField
-                    label="Product SKU"
+                    label="Product SKU *"
                     slotProps={{ inputLabel: { sx: { fontSize: '0.85rem' } } }}
                     value={sku}
                     onChange={(e) => setSku(e.target.value)}
@@ -133,9 +133,9 @@ export default function PlaceOrder({ open, onSubmit, onClose }) {
                     margin='dense'
                 />
                 <TextField
-                    label="Price"
+                    label="Price *"
                     type='number'
-                    slotProps={{ step: "0.01", min: 0, inputLabel: { sx: { fontSize: '0.85rem' } } }}
+                    slotProps={{ htmlInput: {step: "0.01", min: 0}, inputLabel: { sx: { fontSize: '0.85rem' } } }}
                     value={unitPrice}
                     onChange={(e) => setUnitPrice(e.target.value)}
                     size="small"
@@ -144,7 +144,7 @@ export default function PlaceOrder({ open, onSubmit, onClose }) {
 
                 <TextField
                     label="Quantity"
-                    slotProps={{ step: 1, min: 1, inputLabel: { sx: { fontSize: '0.85rem' } } }}
+                    slotProps={{ htmlInput: { min: 1, step: 1 }, inputLabel: { sx: { fontSize: '0.85rem' } } }}
                     type='number'
                     value={quantity}
                     onChange={(e) => setQuantity(Number(e.target.value))}

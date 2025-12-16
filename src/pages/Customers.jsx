@@ -117,7 +117,7 @@ export default function Customers() {
 
       <Snackbar
         open={successOpen}
-        autoHideDuration={3000}
+        autoHideDuration={3500}
         onClose={() => setSuccessOpen(false)}
         anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
       >
