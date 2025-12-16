@@ -15,7 +15,7 @@ export default function OrderItemsDialog({open, items=[], onClose}) {
                             mb: 1
                         }}
                     >
-                        <span>{item.productName}</span>
+                        <span>{item.productName} - {item.productSku}</span>
                         <span>
                             {item.quantity} x {item.unitPrice} ₺
                         </span>

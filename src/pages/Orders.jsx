@@ -7,6 +7,7 @@ import OrderList from "@/components/orders/OrderList";
 import PageHeader from "@/components/common/PageHeader";
 import { useState } from "react";
 import OrderItemsDialog from "@/components/orders/OrderItemsDialog";
+import PlaceOrder from "@/components/orders/PlaceOrder";
 
 function formatDate(dateString) {
     if (!dateString) return "";
@@ -24,12 +25,13 @@ function formatDate(dateString) {
 function getItemCount(items) {
     return items.reduce((sum, item) => sum + item.quantity, 0);
 }
+
 export default function Orders() {
 
     const { data: orders, loading, error, refetch } = useFetch(orderService.getAllOrders);
+    const [openCreate, setOpenCreate] = useState(false);
     const [openItems, setOpenItems] = useState(false);
     const [selectedItems, setSelectedItems] = useState([]);
-
 
     // async function loadOrders() {
     //     try {
@@ -91,7 +93,20 @@ export default function Orders() {
 
     return (
         <Box p={3}>
-            <PageHeader title="Orders" />
+            <PageHeader title="Orders" >
+                <Button
+                    size="small"
+                    variant="contained"
+                    disabled={error !== null}
+                    disableElevation={false}
+                    sx={{ borderRadius: "5px", boxShadow: "0 1px 3px rgba(0,0,0,0.12)", textTransform: "none" }}
+                    color="primary"
+                    startIcon={<span style={{ fontSize: 20 }}>＋</span>}
+                    onClick={() => {
+                        if (!error) setOpenCreate(true)
+                    }}
+                >Place an Order </Button>
+            </PageHeader>
             {error ? (
                 <Alert
                     severity="error"
@@ -113,6 +128,18 @@ export default function Orders() {
                 open={openItems}
                 items={selectedItems}
                 onClose={() => setOpenItems(false)}
+            />
+
+            <PlaceOrder
+                open={openCreate}
+                onClose={()=> setOpenCreate(false)}
+                onSubmit={
+                    async(data)=> {
+                        await orderService.createOrder(data);
+                        setOpenCreate(false);
+                        refetch();
+                    }
+                }
             />
         </Box>
     );

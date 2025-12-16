@@ -7,8 +7,11 @@ async function getAllOrders() {
     return response.data.content;
 }
 
-async function createOrder(order) {
-    const response = await api.post(API_URL, order);
+async function createOrder({customerId, orderItems}) {
+    const response = await api.post(API_URL, {
+        customerId,
+        orderItems
+    });
     return response.data;
 };
 
