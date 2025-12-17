@@ -6,10 +6,12 @@ import customerService from "@/services/customerService";
 
 export default function PlaceOrder({ open, onSubmit, onClose }) {
     const { data: customers = [] } =
-        useFetch(customerService.getAllCustomers); // we only need to get active customers!!!
+        useFetch(customerService.getAllCustomers);
+
+    const activeCustomers = customers.filter(c => c.state == "ACTIVE");
 
 
-    const sortedCustomers = [...customers].sort((a, b) =>
+    const sortedCustomers = [...activeCustomers].sort((a, b) =>
         a.fullName.localeCompare(b.fullName)
     );
 
@@ -128,16 +130,16 @@ export default function PlaceOrder({ open, onSubmit, onClose }) {
                     label="Product SKU *"
                     slotProps={{ inputLabel: { sx: { fontSize: '0.85rem' } } }}
                     value={sku}
-                    onChange={(e) => setSku(e.target.value)}
+                    onChange={(e) => { setError(null); setSku(e.target.value); }}
                     size="small"
                     margin='dense'
                 />
                 <TextField
                     label="Price *"
                     type='number'
-                    slotProps={{ htmlInput: {step: "0.01", min: 0}, inputLabel: { sx: { fontSize: '0.85rem' } } }}
+                    slotProps={{ htmlInput: { step: "0.01", min: 0 }, inputLabel: { sx: { fontSize: '0.85rem' } } }}
                     value={unitPrice}
-                    onChange={(e) => setUnitPrice(e.target.value)}
+                    onChange={(e) => { setError(null); setUnitPrice(e.target.value); }}
                     size="small"
                     margin='dense'
                 />
@@ -147,7 +149,7 @@ export default function PlaceOrder({ open, onSubmit, onClose }) {
                     slotProps={{ htmlInput: { min: 1, step: 1 }, inputLabel: { sx: { fontSize: '0.85rem' } } }}
                     type='number'
                     value={quantity}
-                    onChange={(e) => setQuantity(Number(e.target.value))}
+                    onChange={(e) => { setError(null); setQuantity(Number(e.target.value)); }}
                     size="small"
                     margin='dense'
                 />
@@ -161,33 +163,34 @@ export default function PlaceOrder({ open, onSubmit, onClose }) {
                 </Button>
 
                 {/* Remove item from the list */}
-                {orderItems.length > 0 && (
-                    <Box sx={{ mt: 2 }}>
-                        {orderItems.map((item, index) => (
-                            <Box
-                                key={index}
-                                sx={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                    mb: 1,
-                                }}
-                            >
-                                <span>
-                                    {item.productSku} · {item.quantity} × {item.unitPrice}
-                                </span>
-
-                                <Button
-                                    size="small"
-                                    color="error"
-                                    onClick={() => removeItem(index)}
+                {orderItems.length
+                    > 0 && (
+                        <Box sx={{ mt: 2 }}>
+                            {orderItems.map((item, index) => (
+                                <Box
+                                    key={index}
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        mb: 1,
+                                    }}
                                 >
-                                    Remove
-                                </Button>
-                            </Box>
-                        ))}
-                    </Box>
-                )}
+                                    <span>
+                                        {item.productSku} · {item.quantity} × {item.unitPrice}
+                                    </span>
+
+                                    <Button
+                                        size="small"
+                                        color="error"
+                                        onClick={() => removeItem(index)}
+                                    >
+                                        Remove
+                                    </Button>
+                                </Box>
+                            ))}
+                        </Box>
+                    )}
 
                 <Box
                     sx={{
