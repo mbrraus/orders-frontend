@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Dialog, DialogTitle, Autocomplete, Box, TextField, Button, Alert } from '@mui/material';
 import useFetch from "@/hooks/useFetch";
 import customerService from "@/services/customerService";
+import catalogService from "@/services/catalogService";
 
 
 export default function PlaceOrder({ open, onSubmit, onClose }) {
@@ -21,7 +22,6 @@ export default function PlaceOrder({ open, onSubmit, onClose }) {
     const [error, setError] = useState(null);
 
     const [sku, setSku] = useState("");
-    const [unitPrice, setUnitPrice] = useState("");
     const [quantity, setQuantity] = useState(1);
 
 
@@ -33,31 +33,55 @@ export default function PlaceOrder({ open, onSubmit, onClose }) {
         setError(null);
         onClose();
     }
+
     function removeItem(index) {
         setOrderItems(items =>
             items.filter((_, i) => i !== index));
     }
     function resetDraft() {
         setSku("");
-        setUnitPrice("");
         setQuantity(1);
     }
     function createItem() {
-        if (!sku || !unitPrice) { setError("Please fill all the fields."); return null; }
+        if (!sku) { setError("Please fill all the fields."); return null; }
         return {
             productSku: sku,
-            unitPrice: Number(unitPrice),
             quantity
         };
     }
-    function addItemToList() {
+    async function addItemToList() {
         const item = createItem();
         if (!item) return;
-        setOrderItems(items => [...items, item]);
+
+        const product = await getProductInfo();
+        if (!product) return;
+
+        setOrderItems(items => [...items, {
+            ...item,
+            snapshotName: product.name,
+            snapshotPrice: product.price
+        }]);
         resetDraft();
+    }
+    async function getProductInfo() {
+        if (!sku) return null;
+        try {
+            const product = await catalogService.getProductBySku(sku);
+            if (product.status !== "ACTIVE") {
+                setError("Product is not active");
+                return null;
+            }
+            return product;
+
+        } catch (err) {
+            setError("Product not found");
+            return null;
+        }
     }
     async function handleSubmit(e) {
         e.preventDefault();
+
+        // TODO: snapshot price and name should not be sent normally
         const items =
             orderItems.length > 0
                 ? orderItems :
@@ -119,27 +143,10 @@ export default function PlaceOrder({ open, onSubmit, onClose }) {
                     )}
                 />
                 <TextField
-                    label="Product Name"
-                    slotProps={{ readOnly: true, inputLabel: { sx: { fontSize: '0.85rem' } } }}
-                    value="todo"
-                    size="small"
-                    margin='dense'
-
-                />
-                <TextField
                     label="Product SKU *"
                     slotProps={{ inputLabel: { sx: { fontSize: '0.85rem' } } }}
                     value={sku}
                     onChange={(e) => { setError(null); setSku(e.target.value); }}
-                    size="small"
-                    margin='dense'
-                />
-                <TextField
-                    label="Price *"
-                    type='number'
-                    slotProps={{ htmlInput: { step: "0.01", min: 0 }, inputLabel: { sx: { fontSize: '0.85rem' } } }}
-                    value={unitPrice}
-                    onChange={(e) => { setError(null); setUnitPrice(e.target.value); }}
                     size="small"
                     margin='dense'
                 />
@@ -177,7 +184,7 @@ export default function PlaceOrder({ open, onSubmit, onClose }) {
                                     }}
                                 >
                                     <span>
-                                        {item.productSku} · {item.quantity} × {item.unitPrice}
+                                        {item.snapshotName} · {item.quantity} × {item.snapshotPrice}
                                     </span>
 
                                     <Button
