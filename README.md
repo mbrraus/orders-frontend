@@ -1,16 +1,19 @@
-# React + Vite
+## UI Overview
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### Customer List Table
+![Customer List](src/screenshots/1.png)
 
-Currently, two official plugins are available:
+### Create Customer Dialog
+![Place Order](src/screenshots/2.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Order List Table
+![Customer List](src/screenshots/3.png)
 
-## React Compiler
+### Order Items Dialog
+![Place Order](src/screenshots/4.png)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Create Order - Select Active Customer
+![Customer List](src/screenshots/5.png)
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Create Order - Review & Submit
+![Place Order](src/screenshots/6.png)
